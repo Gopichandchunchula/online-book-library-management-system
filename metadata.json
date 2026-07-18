@@ -1,0 +1,6 @@
+{
+  "name": "LibraManage",
+  "description": "An interactive live preview and simulation of the LibraManage Library Management System. Features role-based dashboard states, interactive bookshelves, catalogs, borrowing trackers, custom reservation logs, reporting graphics, and fine handlers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

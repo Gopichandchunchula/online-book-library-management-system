@@ -1,0 +1,677 @@
+import { Book, Borrowing, Reservation, Fine, UserProfile, ActivityLog } from "./types";
+
+export const DEFAULT_PROFILES: Record<string, UserProfile> = {
+  STUDENT: {
+    name: "Gopichand",
+    email: "gopichand@nhclindia.com",
+    memberId: "LM-2026-8902",
+    joinDate: "Sept 12, 2024",
+    role: "STUDENT",
+    avatarSeed: "Gc",
+    phone: "+91 98765 43210",
+    department: "Computer Science & Engineering"
+  },
+  LIBRARIAN: {
+    name: "Sarah Jenkins",
+    email: "s.jenkins@libramanage.com",
+    memberId: "LM-STAFF-023",
+    joinDate: "Jan 05, 2021",
+    role: "LIBRARIAN",
+    avatarSeed: "Sj",
+    phone: "+1 (555) 732-8910",
+    department: "Cataloging & Preservation"
+  },
+  ADMIN: {
+    name: "Dr. Alistair Vance",
+    email: "a.vance@libramanage.com",
+    memberId: "LM-ADMIN-001",
+    joinDate: "July 15, 2018",
+    role: "ADMIN",
+    avatarSeed: "Av",
+    phone: "+1 (555) 100-2000",
+    department: "Library Operations & IT Director"
+  }
+};
+
+export const DEFAULT_BOOKS: Book[] = [
+  {
+    id: "B-201",
+    title: "Introduction to Algorithms",
+    author: "Thomas H. Cormen",
+    genre: "Technology",
+    isbn: "978-0262033848",
+    publishedDate: "2009-07-31",
+    copiesTotal: 5,
+    copiesAvailable: 3,
+    location: "Rack A-3, Shelf 2",
+    description: "A comprehensive covers-all-foundations textbook on computer algorithms, designed specifically for students and professionals. Includes extensive pseudocode and deep complexity theory.",
+    coverImage: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=400&q=80",
+    rating: 4.8
+  },
+  {
+    id: "B-202",
+    title: "Dune",
+    author: "Frank Herbert",
+    genre: "Sci-Fi",
+    isbn: "978-0441172719",
+    publishedDate: "1965-06-01",
+    copiesTotal: 8,
+    copiesAvailable: 7,
+    location: "Rack D-1, Shelf 4",
+    description: "Set in the far future amidst a sprawling feudal interstellar empire, Dune tells the story of Paul Atreides, whose family accepts the stewardship of the desert planet Arrakis.",
+    coverImage: "https://images.unsplash.com/photo-1509316975850-ff9c5edd0cd9?auto=format&fit=crop&w=400&q=80",
+    rating: 4.9
+  },
+  {
+    id: "B-203",
+    title: "Clean Code: A Handbook of Agile Software Craftsmanship",
+    author: "Robert C. Martin",
+    genre: "Technology",
+    isbn: "978-0132350884",
+    publishedDate: "2008-08-11",
+    copiesTotal: 10,
+    copiesAvailable: 8,
+    location: "Rack A-3, Shelf 5",
+    description: "Even bad code can function. But if code isn't clean, it can bring a development organization to its knees. Uncle Bob presents a revolutionary paradigm for structural cleanliness and software craftsmanship.",
+    coverImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=400&q=80",
+    rating: 4.7
+  },
+  {
+    id: "B-204",
+    title: "The Critique of Pure Reason",
+    author: "Immanuel Kant",
+    genre: "Philosophy",
+    isbn: "978-0521657471",
+    publishedDate: "1781-05-01",
+    copiesTotal: 3,
+    copiesAvailable: 2,
+    location: "Rack P-2, Shelf 1",
+    description: "One of the most influential works in the history of philosophy, establishing transcendental idealism and exploring the limits of human knowledge and metaphysical claims.",
+    coverImage: "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&w=400&q=80",
+    rating: 4.5
+  },
+  {
+    id: "B-205",
+    title: "Brief History of Time",
+    author: "Stephen Hawking",
+    genre: "Science",
+    isbn: "978-0553380163",
+    publishedDate: "1988-03-01",
+    copiesTotal: 6,
+    copiesAvailable: 4,
+    location: "Rack S-1, Shelf 3",
+    description: "A landmark volume written by one of the premier minds of science, explaining black holes, the big bang, cosmological frameworks, and modern quantum gravity for mainstream audiences.",
+    coverImage: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=400&q=80",
+    rating: 4.8
+  },
+  {
+    id: "B-206",
+    title: "To Kill a Mockingbird",
+    author: "Harper Lee",
+    genre: "Literature",
+    isbn: "978-0060935467",
+    publishedDate: "1960-07-11",
+    copiesTotal: 10,
+    copiesAvailable: 8,
+    location: "Rack L-4, Shelf 1",
+    description: "A classic of modern American literature, exploring issues of racial injustice, moral courage, compassion, and childhood innocence in a small Southern town during the Great Depression.",
+    coverImage: "https://images.unsplash.com/photo-1474932430478-367db26836c1?auto=format&fit=crop&w=400&q=80",
+    rating: 4.9
+  },
+  {
+    id: "B-207",
+    title: "Sapiens: A Brief History of Humankind",
+    author: "Yuval Noah Harari",
+    genre: "History",
+    isbn: "978-0062316097",
+    publishedDate: "2011-04-01",
+    copiesTotal: 7,
+    copiesAvailable: 5,
+    location: "Rack H-1, Shelf 2",
+    description: "Sapiens integrates history and science to reconsider common narratives, tracing the evolution of Homo Sapiens from insignificant apes to rulers of the planet through powerful social myths.",
+    coverImage: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=400&q=80",
+    rating: 4.6
+  },
+  {
+    id: "B-208",
+    title: "Deep Work: Rules for Focused Success",
+    author: "Cal Newport",
+    genre: "Technology",
+    isbn: "978-1455586691",
+    publishedDate: "2016-01-05",
+    copiesTotal: 6,
+    copiesAvailable: 6,
+    location: "Rack A-2, Shelf 1",
+    description: "Deep work is the ability to focus without distraction on a cognitively demanding task. It is a skill that allows you to quickly master complicated details and achieve superior outputs.",
+    coverImage: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=400&q=80",
+    rating: 4.7
+  },
+  // Python Collection
+  {
+    id: "B-301",
+    title: "Python Programming Masterclass",
+    author: "Tim Buchalka",
+    genre: "Technology",
+    isbn: "978-1098114565",
+    publishedDate: "2021-03-15",
+    copiesTotal: 8,
+    copiesAvailable: 6,
+    location: "Rack P-1, Shelf 1",
+    description: "An intensive masterclass on Python programming, taking you from complete beginner to building sophisticated data structures, multi-threaded algorithms, and automated scripts.",
+    coverImage: "https://images.unsplash.com/photo-1649180556628-9ba704115795?auto=format&fit=crop&w=400&q=80",
+    rating: 4.8
+  },
+  {
+    id: "B-302",
+    title: "Advanced Python",
+    author: "Luciano Ramalho",
+    genre: "Technology",
+    isbn: "978-1492056324",
+    publishedDate: "2022-05-10",
+    copiesTotal: 5,
+    copiesAvailable: 3,
+    location: "Rack P-1, Shelf 2",
+    description: "Write idiomatic Python code by leveraging its best features. Dive deep into metaprogramming, coroutines, generators, and descriptor protocols to craft clean, fast programs.",
+    coverImage: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=400&q=80",
+    rating: 4.9
+  },
+  {
+    id: "B-303",
+    title: "Python for Beginners",
+    author: "Eric Matthes",
+    genre: "Technology",
+    isbn: "978-1593279288",
+    publishedDate: "2019-05-03",
+    copiesTotal: 12,
+    copiesAvailable: 10,
+    location: "Rack P-1, Shelf 3",
+    description: "A fast-paced, thorough introduction to Python that will have you writing programs, solving problems, and making things that work in no time.",
+    coverImage: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=400&q=80",
+    rating: 4.7
+  },
+  {
+    id: "B-304",
+    title: "Automate the Boring Stuff with Python",
+    author: "Al Sweigart",
+    genre: "Technology",
+    isbn: "978-1593279929",
+    publishedDate: "2019-11-12",
+    copiesTotal: 7,
+    copiesAvailable: 5,
+    location: "Rack P-1, Shelf 4",
+    description: "Learn Python to automate tedious tasks, from searching text files and scraping web pages to renaming spreadsheets and scheduling notifications.",
+    coverImage: "https://images.unsplash.com/photo-1526374865744-48ffaa264cf4?auto=format&fit=crop&w=400&q=80",
+    rating: 4.8
+  },
+  // Django Collection
+  {
+    id: "B-305",
+    title: "Django for Beginners",
+    author: "William S. Vincent",
+    genre: "Technology",
+    isbn: "978-1735467726",
+    publishedDate: "2020-04-18",
+    copiesTotal: 6,
+    copiesAvailable: 4,
+    location: "Rack D-2, Shelf 1",
+    description: "A step-by-step guide to building fully-functional web applications with Django and Python, covering authentication, databases, deployment, and testing.",
+    coverImage: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=400&q=80",
+    rating: 4.6
+  },
+  {
+    id: "B-306",
+    title: "Django REST Framework",
+    author: "William S. Vincent",
+    genre: "Technology",
+    isbn: "978-1735467740",
+    publishedDate: "2021-08-25",
+    copiesTotal: 9,
+    copiesAvailable: 7,
+    location: "Rack D-2, Shelf 2",
+    description: "Learn to build professional RESTful APIs with Python, Django, and DRF, covering serializers, views, permissions, pagination, and token authentication.",
+    coverImage: "https://images.unsplash.com/photo-1562813733-b31f71025d54?auto=format&fit=crop&w=400&q=80",
+    rating: 4.8
+  },
+  {
+    id: "B-307",
+    title: "Mastering Django",
+    author: "Nigel George",
+    genre: "Technology",
+    isbn: "978-1783551521",
+    publishedDate: "2016-12-15",
+    copiesTotal: 4,
+    copiesAvailable: 2,
+    location: "Rack D-2, Shelf 3",
+    description: "An advanced, hands-on guide to mastering Django core features, including database optimization, custom middleware, security protocols, and memory caching.",
+    coverImage: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&q=80",
+    rating: 4.5
+  },
+  {
+    id: "B-308",
+    title: "Full Stack Django Development",
+    author: "Marko Šarić",
+    genre: "Technology",
+    isbn: "978-1801815147",
+    publishedDate: "2023-09-30",
+    copiesTotal: 6,
+    copiesAvailable: 4,
+    location: "Rack D-2, Shelf 4",
+    description: "Architect complete, production-grade applications using Django with HTMX, Tailwind CSS, Celery, and PostgreSQL for maximum scalability.",
+    coverImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=400&q=80",
+    rating: 4.7
+  },
+  // React Collection
+  {
+    id: "B-309",
+    title: "React Mastery",
+    author: "Robin Wieruch",
+    genre: "Technology",
+    isbn: "978-1098124564",
+    publishedDate: "2022-02-05",
+    copiesTotal: 10,
+    copiesAvailable: 8,
+    location: "Rack R-1, Shelf 1",
+    description: "A deep dive into advanced frontend architectures using React. Master state management frameworks, concurrent render mechanics, and isomorphic rendering.",
+    coverImage: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=400&q=80",
+    rating: 4.9
+  },
+  {
+    id: "B-310",
+    title: "React Hooks Deep Dive",
+    author: "Dave Ceddia",
+    genre: "Technology",
+    isbn: "978-1789617320",
+    publishedDate: "2021-06-25",
+    copiesTotal: 6,
+    copiesAvailable: 5,
+    location: "Rack R-1, Shelf 2",
+    description: "A focused manual on custom Hooks, state sync processes, memoization optimization with useMemo/useCallback, and clean state reducer hooks.",
+    coverImage: "https://images.unsplash.com/photo-1581291518655-9523c932dedf?auto=format&fit=crop&w=400&q=80",
+    rating: 4.7
+  },
+  {
+    id: "B-311",
+    title: "Modern React Projects",
+    author: "Roy Derks",
+    genre: "Technology",
+    isbn: "978-1801072557",
+    publishedDate: "2020-10-18",
+    copiesTotal: 4,
+    copiesAvailable: 3,
+    location: "Rack R-1, Shelf 3",
+    description: "Build scalable real-world frontend applications including collaborative boards, dynamic dashboards, and e-commerce platforms using Tailwind and Next.js.",
+    coverImage: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=400&q=80",
+    rating: 4.6
+  },
+  {
+    id: "B-312",
+    title: "React.js Complete Guide",
+    author: "Maximilian Schwarzmüller",
+    genre: "Technology",
+    isbn: "978-1801817424",
+    publishedDate: "2023-01-14",
+    copiesTotal: 14,
+    copiesAvailable: 11,
+    location: "Rack R-1, Shelf 4",
+    description: "The comprehensive bible of React core. Covers JSX mechanics, event architectures, styling pathways, responsive layouts, and modern router capabilities.",
+    coverImage: "https://images.unsplash.com/photo-1607799279861-4dd421887fb3?auto=format&fit=crop&w=400&q=80",
+    rating: 4.8
+  },
+  // JavaScript Collection
+  {
+    id: "B-313",
+    title: "JavaScript Essentials",
+    author: "Marijn Haverbeke",
+    genre: "Technology",
+    isbn: "978-1593279509",
+    publishedDate: "2018-12-04",
+    copiesTotal: 15,
+    copiesAvailable: 12,
+    location: "Rack J-1, Shelf 1",
+    description: "Master variables, control flows, asynchronous executions, and standard function architectures that form the backbone of clean JavaScript development.",
+    coverImage: "https://images.unsplash.com/photo-1579468118864-1b9ea3c0db4a?auto=format&fit=crop&w=400&q=80",
+    rating: 4.7
+  },
+  {
+    id: "B-314",
+    title: "Advanced JavaScript",
+    author: "Kyle Simpson",
+    genre: "Technology",
+    isbn: "978-1449335588",
+    publishedDate: "2014-03-24",
+    copiesTotal: 8,
+    copiesAvailable: 5,
+    location: "Rack J-1, Shelf 2",
+    description: "Understand the core compiler foundations, closure scope patterns, lexical context binders, this keywords bindings, and prototype system structures.",
+    coverImage: "https://images.unsplash.com/photo-1618401471353-b98aedd07871?auto=format&fit=crop&w=400&q=80",
+    rating: 4.8
+  },
+  {
+    id: "B-315",
+    title: "ES6 Complete Guide",
+    author: "Nicolas Bevacqua",
+    genre: "Technology",
+    isbn: "978-1617292859",
+    publishedDate: "2017-07-29",
+    copiesTotal: 5,
+    copiesAvailable: 4,
+    location: "Rack J-1, Shelf 3",
+    description: "A definitive focus on ES6 specifications, describing modules architectures, arrow declarations, destructuring, and asynchronous promise pipelines.",
+    coverImage: "https://images.unsplash.com/photo-1531554694128-c4c6665f59c2?auto=format&fit=crop&w=400&q=80",
+    rating: 4.6
+  },
+  {
+    id: "B-316",
+    title: "Node.js and JavaScript Backend",
+    author: "Shelley Powers",
+    genre: "Technology",
+    isbn: "978-1491943144",
+    publishedDate: "2016-10-31",
+    copiesTotal: 7,
+    copiesAvailable: 5,
+    location: "Rack J-1, Shelf 4",
+    description: "Leverage standard Node systems, event emitter modules, custom buffers, file streams, and REST API express routing setups to handle backend requests.",
+    coverImage: "https://images.unsplash.com/photo-1504639725590-34d0984388bd?auto=format&fit=crop&w=400&q=80",
+    rating: 4.5
+  },
+  // HTML & CSS Collection
+  {
+    id: "B-317",
+    title: "HTML5 Complete Guide",
+    author: "Bruce Lawson",
+    genre: "Technology",
+    isbn: "978-0321722055",
+    publishedDate: "2011-09-02",
+    copiesTotal: 7,
+    copiesAvailable: 6,
+    location: "Rack C-1, Shelf 1",
+    description: "Deeply understand structural semantics, embeddability mechanics, responsive video/canvas elements, and offline application storage attributes of HTML5.",
+    coverImage: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=400&q=80",
+    rating: 4.4
+  },
+  {
+    id: "B-318",
+    title: "CSS Flexbox and Grid",
+    author: "Rachel Andrew",
+    genre: "Technology",
+    isbn: "978-1925427500",
+    publishedDate: "2017-06-25",
+    copiesTotal: 10,
+    copiesAvailable: 9,
+    location: "Rack C-1, Shelf 2",
+    description: "Master advanced web layout techniques, aligning structural boxes effortlessly and dynamically with robust CSS flexbox rows and fractional layouts.",
+    coverImage: "https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?auto=format&fit=crop&w=400&q=80",
+    rating: 4.7
+  },
+  {
+    id: "B-319",
+    title: "Responsive Web Design",
+    author: "Ethan Marcotte",
+    genre: "Technology",
+    isbn: "978-1937557188",
+    publishedDate: "2015-11-20",
+    copiesTotal: 6,
+    copiesAvailable: 4,
+    location: "Rack C-1, Shelf 3",
+    description: "Perfect look and feel interfaces across devices using fluid grid matrices, media-query triggers, and adaptive image scales seamlessly.",
+    coverImage: "https://images.unsplash.com/photo-1550063873-ab792950096b?auto=format&fit=crop&w=400&q=80",
+    rating: 4.6
+  },
+  {
+    id: "B-320",
+    title: "Modern UI Design",
+    author: "Steve Schoger",
+    genre: "Technology",
+    isbn: "978-0995254201",
+    publishedDate: "2018-10-01",
+    copiesTotal: 8,
+    copiesAvailable: 7,
+    location: "Rack C-1, Shelf 4",
+    description: "Practical strategies to design beautiful dashboards, utilizing negative white space, perfect typography pairs, and custom micro-shadow boundaries.",
+    coverImage: "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?auto=format&fit=crop&w=400&q=80",
+    rating: 4.9
+  },
+  // Database Collection
+  {
+    id: "B-321",
+    title: "MySQL Database Design",
+    author: "Baron Schwartz",
+    genre: "Technology",
+    isbn: "978-1491918661",
+    publishedDate: "2021-11-10",
+    copiesTotal: 6,
+    copiesAvailable: 4,
+    location: "Rack M-1, Shelf 1",
+    description: "Design clean third-normal forms, tune query pipelines, select primary schema indexes, and optimize transaction isolation levels with high throughput.",
+    coverImage: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=400&q=80",
+    rating: 4.7
+  },
+  {
+    id: "B-322",
+    title: "PostgreSQL Essentials",
+    author: "Regina O. Obe",
+    genre: "Technology",
+    isbn: "978-1784393960",
+    publishedDate: "2020-05-18",
+    copiesTotal: 5,
+    copiesAvailable: 3,
+    location: "Rack M-1, Shelf 2",
+    description: "Harness Postgres JSONB attributes, recursive queries, custom plpgsql triggers, and geographic queries to secure enterprise-grade data stores.",
+    coverImage: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=400&q=80",
+    rating: 4.6
+  },
+  {
+    id: "B-323",
+    title: "Database Management Systems",
+    author: "Raghu Ramakrishnan",
+    genre: "Technology",
+    isbn: "978-0072465631",
+    publishedDate: "2002-08-14",
+    copiesTotal: 10,
+    copiesAvailable: 8,
+    location: "Rack M-1, Shelf 3",
+    description: "The academic cornerstone of database storage mechanics, discussing buffer pools, B-Trees index nodes, WAL logs, and database concurrency controls.",
+    coverImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=80",
+    rating: 4.5
+  },
+  {
+    id: "B-324",
+    title: "SQL for Developers",
+    author: "Ben Forta",
+    genre: "Technology",
+    isbn: "978-0135182796",
+    publishedDate: "2019-12-25",
+    copiesTotal: 8,
+    copiesAvailable: 6,
+    location: "Rack M-1, Shelf 4",
+    description: "Build SQL statements for complex search needs. Covers nested subqueries, window functions partitions, inner/outer joins, and transaction boundaries.",
+    coverImage: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=400&q=80",
+    rating: 4.7
+  },
+  // Full Stack & Software Engineering Collection
+  {
+    id: "B-325",
+    title: "Full Stack Web Development",
+    author: "Laura Lemay",
+    genre: "Technology",
+    isbn: "978-0136873525",
+    publishedDate: "2021-08-12",
+    copiesTotal: 7,
+    copiesAvailable: 5,
+    location: "Rack S-2, Shelf 1",
+    description: "Bridges React client states with secure server routing and PostgreSQL databases using clean middleware systems and deployment patterns.",
+    coverImage: "https://images.unsplash.com/photo-1562813733-b31f71025d54?auto=format&fit=crop&w=400&q=80",
+    rating: 4.6
+  },
+  {
+    id: "B-326",
+    title: "System Design Basics",
+    author: "Alex Xu",
+    genre: "Technology",
+    isbn: "978-1736049112",
+    publishedDate: "2020-06-12",
+    copiesTotal: 9,
+    copiesAvailable: 8,
+    location: "Rack S-2, Shelf 2",
+    description: "Understand distributed scalability architectures, load balancing schemas, DNS pathways, CDN cache invalidations, and high available server rings.",
+    coverImage: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=400&q=80",
+    rating: 4.9
+  },
+  {
+    id: "B-327",
+    title: "API Development with Django",
+    author: "William S. Vincent",
+    genre: "Technology",
+    isbn: "978-1735467771",
+    publishedDate: "2022-10-01",
+    copiesTotal: 5,
+    copiesAvailable: 4,
+    location: "Rack S-2, Shelf 3",
+    description: "Formulate RESTful endpoints, API throttling layers, OAuth gateway integrations, request routing, and automatic JSON document schemas.",
+    coverImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=400&q=80",
+    rating: 4.8
+  },
+  {
+    id: "B-328",
+    title: "Software Engineering Principles",
+    author: "Ian Sommerville",
+    genre: "Technology",
+    isbn: "978-0133943030",
+    publishedDate: "2015-04-03",
+    copiesTotal: 6,
+    copiesAvailable: 5,
+    location: "Rack S-2, Shelf 4",
+    description: "The comprehensive software lifecycle compass. Covers systems planning, requirements discovery, agile methodologies, and testing structures.",
+    coverImage: "https://images.unsplash.com/photo-1605379399642-870262d3d051?auto=format&fit=crop&w=400&q=80",
+    rating: 4.5
+  },
+  {
+    id: "B-329",
+    title: "Git & GitHub Mastery",
+    author: "Scott Chacon",
+    genre: "Technology",
+    isbn: "978-1484200773",
+    publishedDate: "2014-11-09",
+    copiesTotal: 8,
+    copiesAvailable: 7,
+    location: "Rack S-2, Shelf 5",
+    description: "Master version control structures. Deeply understand git objects refs, cherry-picking, branch merges conflicts resolution, and collaborative pull pipelines.",
+    coverImage: "https://images.unsplash.com/photo-1618401471353-b98aedd07871?auto=format&fit=crop&w=400&q=80",
+    rating: 4.8
+  }
+];
+
+export const DEFAULT_BORROWINGS: Borrowing[] = [
+  {
+    id: "BW-901",
+    bookId: "B-201",
+    bookTitle: "Introduction to Algorithms",
+    bookAuthor: "Thomas H. Cormen",
+    borrowDate: "2026-05-01",
+    dueDate: "2026-05-15",
+    returnDate: null,
+    status: "OVERDUE",
+    fineAmount: 4.00 // $1 per overdue day (assuming today is May 20, 2026)
+  },
+  {
+    id: "BW-902",
+    bookId: "B-205",
+    bookTitle: "Brief History of Time",
+    bookAuthor: "Stephen Hawking",
+    borrowDate: "2026-05-12",
+    dueDate: "2026-05-26",
+    returnDate: null,
+    status: "ACTIVE",
+    fineAmount: 0.00
+  },
+  {
+    id: "BW-903",
+    bookId: "B-206",
+    bookTitle: "To Kill a Mockingbird",
+    bookAuthor: "Harper Lee",
+    borrowDate: "2026-04-10",
+    dueDate: "2026-04-24",
+    returnDate: "2026-04-22",
+    status: "RETURNED",
+    fineAmount: 0.00
+  }
+];
+
+export const DEFAULT_RESERVATIONS: Reservation[] = [
+  {
+    id: "RS-101",
+    bookId: "B-203",
+    bookTitle: "Clean Code: A Handbook of Agile Software Craftsmanship",
+    bookAuthor: "Robert C. Martin",
+    reserveDate: "2026-05-18",
+    queuePosition: 2,
+    status: "PENDING"
+  },
+  {
+    id: "RS-102",
+    bookId: "B-204",
+    bookTitle: "The Critique of Pure Reason",
+    bookAuthor: "Immanuel Kant",
+    reserveDate: "2026-05-19",
+    queuePosition: 1,
+    status: "READY" // Book returned by another user, ready for pick up
+  }
+];
+
+export const DEFAULT_FINES: Fine[] = [
+  {
+    id: "FN-401",
+    bookTitle: "Introduction to Algorithms",
+    amount: 4.00,
+    reason: "Late return - 4 days overdue (Due May 15, current date May 20)",
+    status: "UNPAID",
+    dateIncurred: "2026-05-16"
+  },
+  {
+    id: "FN-402",
+    bookTitle: "The Critique of Pure Reason",
+    amount: 2.50,
+    reason: "Damaged spine penalty during active checkout",
+    status: "PAID",
+    dateIncurred: "2026-03-10"
+  }
+];
+
+export const DEFAULT_ACTIVITY_LOGS: ActivityLog[] = [
+  {
+    id: "LOG-001",
+    userEmail: "gopichand@nhclindia.com",
+    userName: "Gopichand",
+    userRole: "STUDENT",
+    action: "Borrowed 'Brief History of Time'",
+    timestamp: "2026-05-12 10:14 AM",
+    type: "BORROW"
+  },
+  {
+    id: "LOG-002",
+    userEmail: "gopichand@nhclindia.com",
+    userName: "Gopichand",
+    userRole: "STUDENT",
+    action: "Reserved 'Clean Code'",
+    timestamp: "2026-05-18 03:45 PM",
+    type: "RESERVE"
+  },
+  {
+    id: "LOG-003",
+    userEmail: "s.jenkins@libramanage.com",
+    userName: "Sarah Jenkins",
+    userRole: "LIBRARIAN",
+    action: "Added 2 new shelf copies to 'Introduction to Algorithms'",
+    timestamp: "2026-05-19 09:12 AM",
+    type: "SYSTEM"
+  },
+  {
+    id: "LOG-004",
+    userEmail: "s.jenkins@libramanage.com",
+    userName: "Sarah Jenkins",
+    userRole: "LIBRARIAN",
+    action: "Registered user security privileges for Gopichand",
+    timestamp: "2026-05-10 11:00 AM",
+    type: "SYSTEM"
+  }
+];
