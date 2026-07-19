@@ -98,6 +98,22 @@
       "previews": [
         "201"
       ]
+    },
+    {
+      "id": "user_1784437313077",
+      "username": "ramus",
+      "email": "ramu12@gmail.com",
+      "passwordHash": "1122",
+      "first_name": "ramu",
+      "last_name": "",
+      "role": "STUDENT",
+      "profile": {
+        "member_id": "LM-2026-1017",
+        "phone": "7896325412",
+        "department": "Tech",
+        "join_date": "Jul 19, 2026",
+        "avatar_seed": "R"
+      }
     }
   ],
   "books": [

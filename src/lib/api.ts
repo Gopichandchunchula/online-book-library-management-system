@@ -2,7 +2,7 @@ import axios from "axios";
 import { Book, Borrowing, Reservation, UserProfile, UserRole } from "../types";
 
 // Setup base URL pointing to Node proxy server at port 3000
-const API_BASE_URL = "/api";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://online-book-library-management-system.onrender.com";
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -10,7 +10,6 @@ const apiClient = axios.create({
     "Content-Type": "application/json",
   },
 });
-
 // Automatically inject JWT Bearer Authorization header into all requests
 apiClient.interceptors.request.use(
   (config) => {
