@@ -19,11 +19,9 @@ apiClient.interceptors.request.use(
       // DO NOT delete standard Authorization headers. They are needed by
       // the AI Studio/Cloud Run secure proxy to validate the browser's developer session.
       if (typeof config.headers.set === "function") {
-        config.headers.set("X-Authorization", bearer);
-        config.headers.set("X-Library-Token", bearer);
+        config.headers.set("Authorization", bearer);
       } else {
-        (config.headers as any)["X-Authorization"] = bearer;
-        (config.headers as any)["X-Library-Token"] = bearer;
+        (config.headers as any)["Authorization"] = bearer;
       }
     }
     return config;
