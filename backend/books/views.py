@@ -17,9 +17,16 @@ class BookViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         # Allow unauthorized / read-only actions for students to explore catalog,
         # but require staff permissions (librarian or admin) for writing/modifying
-        if self.request.method in permissions.SAFE_METHODS:
-            return [permissions.AllowAny()]
-        return [permissions.IsAdminUser()]
+        if self.action in ["preview", "purchase"]:
+            permission_classes = [permissions.IsAuthenticated]
+        elif self.request.method in permissions.SAFE_METHODS:
+            permission_classes = [permissions.AllowAny]
+        else:
+            permission_classes = [permissions.IsAdminUser]
+
+        return [permission() for permission in permission_classes]
+    
+    
 
     @action(detail=True, methods=['POST'], permission_classes=[permissions.IsAuthenticated])
     def preview(self, request, pk=None):
